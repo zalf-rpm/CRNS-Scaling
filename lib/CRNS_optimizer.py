@@ -208,7 +208,8 @@ def corr_lin_incoming_correction(Inc, Inc_ref, psi):
     Returns:
         cor_i (float, range: 0.8, 1.2): humidity correction factor
     """
-    cor_i = 1 + psi * (Inc - Inc_ref)
+    #cor_i = 1 + psi * (Inc - Inc_ref)
+    cor_i = 1 + psi * (Inc / Inc_ref - 1)
     return cor_i
 
 def corr_exp_incoming_correction(Inc, Inc_ref, psi):
@@ -348,10 +349,10 @@ def parameter_estimator_a(pressure,neutrons,incoming,humidity,fcttype="exp",plot
     mydf.loc[mydf['MOD'] > 6000, 'MOD'] = np.nan
     mydf.loc[mydf['Pressure'] < 400, 'Pressure'] = np.nan
     mydf.loc[mydf['Pressure'] > 1200, 'Pressure'] = np.nan
-    mydf.loc[mydf['Incoming'] < 0.5, 'Incoming'] = np.nan
-    mydf.loc[mydf['Incoming'] > 1.5, 'Incoming'] = np.nan
+    mydf.loc[mydf['Incoming'] < 0, 'Incoming'] = np.nan
+    mydf.loc[mydf['Incoming'] > 10000, 'Incoming'] = np.nan
     mydf.loc[mydf['Abs_h'] < 0, 'Abs_h'] = np.nan
-    mydf.loc[mydf['Abs_h'] > 35, 'Abs_h'] = np.nan
+    mydf.loc[mydf['Abs_h'] > 40, 'Abs_h'] = np.nan
     
     mydf=mydf.dropna(subset=['MOD'])
     mydf=mydf.dropna(subset=['Pressure'])
@@ -473,7 +474,8 @@ def parameter_estimator_a(pressure,neutrons,incoming,humidity,fcttype="exp",plot
     
     # Define bounds for each parameter (example values)
     #beta omega psi
-    param_bounds = [(-0.033, 0.0333), (-0.8/35, 0.8/35), (-1.9, 1.9)]  # Adjust as needed
+    #param_bounds = [(-0.033, 0.0333), (-0.8/35, 0.8/35), (-1.9, 1.9)]  # Adjust as needed
+    param_bounds = [(-0.033, 0.0333), (-1.1, 1.1), (-1.9, 1.9)]  # Adjust as needed
     if plot_flag>=1:
         print("param_bounds are:")
         print(param_bounds)
@@ -772,7 +774,8 @@ def parameter_estimator(pressure,neutrons,incoming,humidity,fcttype="exp",plot_f
     
     # Define bounds for each parameter (example values)
     #beta omega psi
-    param_bounds = [(-0.033, 0.0333), (-0.8/35, 0.8/35), (-1.9, 1.9)]  # Adjust as needed
+    #param_bounds = [(-0.033, 0.0333), (-0.8/35, 0.8/35), (-1.9, 1.9)]  # Adjust as needed
+    param_bounds = [(-0.033, 0.0333), (-1.1, 1.1), (-1.9, 1.9)]  # Adjust as needed
     if plot_flag>=1:
         print("param_bounds are:")
         print(param_bounds)
